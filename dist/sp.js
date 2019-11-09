@@ -712,6 +712,20 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
           i.innerHTML = "close";
           h.appendChild(i);
 
+          let p = document.createElement("div");
+          p.classList.add("fsd-cnt");
+
+          if(cnt){
+			if (typeof cnt === "object"){
+				p.appendChild(cnt);
+			}
+			else {
+				p.innerHTML = cnt;
+			}    
+          }
+
+          d.appendChild(p);
+
           if (b && typeof b === "object"){
             let _t = b.text || "Button";
             let _b = b.background || bg;
@@ -734,19 +748,6 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
 
           d.appendChild(h);
 
-          let p = document.createElement("div");
-          p.classList.add("fsd-cnt");
-
-          if(cnt){
-              if (typeof cnt === "object"){
-                  p.appendChild(cnt);
-              }
-              else {
-                p.innerHTML = cnt;
-              }    
-          }
-
-          d.appendChild(p);
           document.body.appendChild(d);
 
           function _delete(){
@@ -2706,25 +2707,31 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
           });
       }
 
-      Array.prototype.forEach.call(document.querySelectorAll(".fab"), f => {
-          let fc = f.querySelector(".fab-content");
-          let fb = f.querySelector(".fab-btn");
-          
-          if (fc && fb){
-            if (fb.classList.contains("fab-center")){
-              fc.classList.add("center");
+       // Control Fab elements
+      if(document.querySelector(".fab-btn")){
+        $(".fab-btn").click(() => {
+            if(document.querySelector(".fab-btn ~ .fab-content")){
+              $(".fab-btn ~ .fab-content").toggleClass("active");
             }
-            else if (fb.classList.contains("fab-top-left")){
-              fc.classList.add("sp-fab-content-top-left");
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll(".fab"), f => {
+            let fc = f.querySelector(".fab-content");
+            let fb = f.querySelector(".fab-btn");
+            
+            if (fc && fb){
+              if (fb.classList.contains("fab-center")){
+                fc.classList.add("sp-fab-content-center");
+              }
+              else if (fb.classList.contains("fab-top-left")){
+                fc.classList.add("sp-fab-content-top-left");
+              }
+              else {
+                fc.classList.add("sp-fab-content-default");
+              }
             }
-            else {
-              fc.classList.add("sp-fab-content-default");
-            }
-          }
-      });
-
-
-
+        });
+      }
     });
 
     window.addEventListener("load", () => {
@@ -2845,20 +2852,11 @@ function _sp_init(){
       header.style.paddingLeft = "24px";
     }
 
-    // Control Fab elements
-    if(document.querySelector(".fab-btn")){
-      $(".fab-btn").click(() => {
-          if(document.querySelector(".fab-btn ~ .fab-content")){
-            $(".fab-btn ~ .fab-content").toggle("active");
-          }
-      });
-    }
-
     // Control Accordian Elements;
     Array.prototype.forEach.call(document.getElementsByClassName("collapse-btn"), c => {
         c.addEventListener("click", () => {
-          let icon = this.querySelector(".material-icons");
-          let panel = this.nextElementSibling;
+          let icon = c.querySelector(".material-icons");
+          let panel = c.nextElementSibling;
           
           if (icon){
             icon.classList.toggle("rotate180");
