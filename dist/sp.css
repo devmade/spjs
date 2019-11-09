@@ -4182,7 +4182,7 @@ transition: 0.3s ease-out all;
 }
 /* sp waiting */
 .sp-waiting {
-  min-width: 200px;
+  width: 200px;
   min-height: 58px;
   position: fixed;
   left: 50%;
@@ -4202,10 +4202,9 @@ transition: 0.3s ease-out all;
   height: 58px;
 }
 .sp-waiting-text {
-  display: block;
+  display: inline-block;
   padding: 16px;
-  width: 100%;
-  padding: 16px;
+  width: 200px;
   font-size: 14px;
   text-align: left!important;
 }
@@ -4444,6 +4443,7 @@ font-size: 14px;
   z-index:248;
   margin:0;
   font-weight: 500;
+  cursor: pointer;
 }
 .header.bottom {
   bottom: 0;
@@ -4690,12 +4690,12 @@ text-overflow: ellipsis;
 overflow: hidden;
 white-space: nowrap;
 }
-.material-list.icon-list.one-line-list .list-item, .material-list.avatar-list.one-line-list .list-item, .material-list.form-list.one-line-list .list-item {
+.material-list.icon-list.one-line-list .list-item, .material-list.avatar-list.one-line-list .list-item {
 height: 56px;
 padding: 16px;
 line-height: 56px;
 }
-.material-list.icon-list.one-line-list .list-item .list-text, .material-list.avatar-list.one-line-list .list-item .list-text, .material-list.form-list.one-line-list .list-item .list-text{
+.material-list.icon-list.one-line-list .list-item .item-text, .material-list.avatar-list.one-line-list .list-item .item-text {
 width: calc(100% - 72px);
 float: right;
 line-height: 56px;
@@ -4724,7 +4724,7 @@ width: 56px;
 height: 56px;
 float: left;
 }
-.material-list.thumbnail-list.one-line-list .list-item .list-text {
+.material-list.thumbnail-list.one-line-list .list-item .item-text {
 height: 72px;
 line-height: 72px;
 width: calc(100% - 88px);
@@ -4737,7 +4737,7 @@ height: 56px;
 margin-left: -16px;
 float: left;
 }
-.material-list.one-line-list.large-thumbnail-list .list-item .list-text {
+.material-list.one-line-list.large-thumbnail-list .list-item .item-text {
 height: 56px;
 line-height: 56px;
 width: calc(100% - 116px);
@@ -4749,8 +4749,7 @@ position: relative;
 height: 64px;
 padding: 24px 16px 20px 16px;
 font-size: 16px;
-line-height: 20px;
-text-overflow: ellipsis;
+line-height: 20px;llipsis;
 overflow: hidden;
 white-space: nowrap;
 }
@@ -4781,7 +4780,7 @@ height: 72px;
 padding: 16px;
 line-height: 72px;
 }
-.material-list.icon-list.two-line-list .list-item .list-text, .material-list.avatar-list.two-line-list .list-item .list-text, .material-list.thumbnail-list.two-line-list .list-item .list-text {
+.material-list.icon-list.two-line-list .list-item .item-text, .material-list.avatar-list.two-line-list .list-item .item-text, .material-list.thumbnail-list.two-line-list .list-item .item-text {
 position: relative;
 width: calc(100% - 72px);
 float: right;
@@ -4824,7 +4823,7 @@ height: 56px;
 float: left;
 margin-left: -16px;
 }
-.material-list.large-thumbnail-list.two-line-list .list-item .list-text {
+.material-list.large-thumbnail-list.two-line-list .list-item .item-text {
 position: relative;
 height: 72px;
 margin-top: -8px;
@@ -4877,7 +4876,7 @@ height: 88px;
 padding: 16px;
 line-height: 88px;
 }
-.material-list.icon-list.three-line-list .list-item .list-text, .material-list.avatar-list.three-line-list .list-item .list-text, .material-list.thumbnail-list.three-line-list .list-item .list-text {
+.material-list.icon-list.three-line-list .list-item .item-text, .material-list.avatar-list.three-line-list .list-item .item-text, .material-list.thumbnail-list.three-line-list .list-item .item-text {
 position: relative;
 width: calc(100% - 72px);
 float: right;
@@ -4920,7 +4919,7 @@ height: 56px;
 float: left;
 margin-left: -16px;
 }
-.material-list.large-thumbnail-list.three-line-list .list-item .list-text {
+.material-list.large-thumbnail-list.three-line-list .list-item .item-text {
 position: relative;
 height: 72px;
 margin-top: -16px;
@@ -4932,7 +4931,7 @@ line-height: 12px;
 width: calc(100% - 116px);
 float: right;
 }
-.material-list.divider-list .list-text {
+.material-list.divider-list .item-text {
 border-bottom: 1px solid #ccc;
 }
 /*image list*/
@@ -5327,10 +5326,12 @@ padding: 0px!important;
   position: fixed;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background: white;
   transition: opacity 0.1s linear, transform 0.1s linear;
   animation: fullscreendialogAnim 0.1s linear 1;
+  z-index: 249;
 }
 
 .fullscreendialog .header {
@@ -5349,17 +5350,7 @@ padding: 0px!important;
 }
 
 .fsDialogBtn {
-  height: 36px;
-  min-width: 36px;
-  text-align: center;
-  line-height: 36px;
-  font-size: 14px;
-  position:absolute;
-  right: 8px;
-  top: 12px;
-  display: inline-block;
-  border: none;
-  text-transform: uppercase;
+  margin-top: 10px;
 }
 @keyframes fullscreendialogAnim {
   from {

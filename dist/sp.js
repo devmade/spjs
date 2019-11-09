@@ -85,6 +85,17 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
 	  MaterialNav: false
 	};
 
+  // Function to stop going back
+  function historyListener(){
+    SPprops.historySteps++;
+    history.pushState(null, document.title, location.href);
+  }
+
+  // Function to prevent default
+  function preventDefault(e){
+    e.preventDefault();
+  }
+
     let SP = function(selector){
         let self = {};
         self.selector = selector;
@@ -318,8 +329,12 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
 
         // create sp action sheet (material-design)
         self.createSheet = (options) => {
+          self.toggleNoScroll();
+
           SPprops.widgetCount.Sheet++;
           SPprops.scrimCountBy.Sheet++;
+          SPprops.blockGoingBackBy.Waiting++;
+          self.preventBackKey();
           self.createScrim();
           self.scrimAddListener("click", self.removeSheet);
 
@@ -351,10 +366,14 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
         };
 
         self.removeSheet = () => {
+          self.toggleNoScroll();
+
           let bs = document.getElementById("bottomsheet");
           if(bs && SPprops.widgetCount.Sheet > 0){
           	SPprops.widgetCount.Sheet--;
           	SPprops.scrimCountBy.Sheet--;
+            SPprops.blockGoingBackBy.Waiting--;
+            self.defaultBackKey();
           	self.scrimRemoveListener("click", self.removeSheet);
             self.removeScrim();
             bs.parentElement.removeChild(bs);
@@ -446,20 +465,20 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
         // to destroy the waiting process
         self.removeWaiting = (callback) => {
             if(SPprops.blockGoingBackBy.Waiting > 0){
-                SPprops.blockGoingBackBy.Waiting--;
-                self.defaultBackKey();
+              SPprops.blockGoingBackBy.Waiting--;
+              self.defaultBackKey();
             }
 
             let w = document.querySelector(".sp-waiting");
 
             if(w && SPprops.widgetCount.Waiting > 0){
-                document.body.removeChild(w);
-                SPprops.widgetCount.Waiting--;
+              document.body.removeChild(w);
+              SPprops.widgetCount.Waiting--;
 
-                if(SPprops.scrimCountBy.Waiting > 0){
-                    self.removeScrim();
-                    SPprops.scrimCountBy.Waiting--;
-                }
+              if(SPprops.scrimCountBy.Waiting > 0){
+                self.removeScrim();
+                SPprops.scrimCountBy.Waiting--;
+              }
             }
 
             if(typeof SPprops.Callback.Waiting === "function"){
@@ -525,7 +544,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
 	                self.scrimAddListener("click", _delete);
             	}
 
-                self.onBackKey(self.removeDialog);
+                // self.onBackKey(self.removeDialog);
             }
 
             if (typeof cHTML === "undefined"){
@@ -648,7 +667,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
             if(SPprops.blockGoingBackBy.Dialog > 0){
                 SPprops.blockGoingBackBy.Dialog--;
                 self.defaultBackKey();
-                self.removeOnBackKey(self.removeDialog);
+                // self.removeOnBackKey(self.removeDialog);
             }
         };
 
@@ -666,7 +685,9 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
           SPprops.blockGoingBackBy.FSDialog++;
           self.preventBackKey();
 
-          self.onBackKey(self.removeFullScreenDialog);
+          self.toggleNoScroll();
+
+          // self.onBackKey(self.removeFullScreenDialog);
 
           let t = option.title || "";
           let bg = option.background || "#fff";
@@ -690,6 +711,27 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
           i.addEventListener("click",_delete);
           i.innerHTML = "close";
           h.appendChild(i);
+
+          if (b && typeof b === "object"){
+            let _t = b.text || "Button";
+            let _b = b.background || bg;
+            let _c = b.color || c;
+            let _br = b.borderRadius || "none";
+            let _s = b.boxShadow || "none";
+
+            let btn = document.createElement("button");
+            btn.classList.add("fsDialogBtn", "float-right", "btn", "shadow1");
+            btn.style = `background: ${_b}; color: ${_c}; borderRadius: ${_br}; boxShadow: ${_s};`;
+            btn.innerText = _t;
+            btn.addEventListener("click", () => {
+              _delete();
+              if(a && typeof a === "function"){
+                a(p);
+              }
+            });
+            h.appendChild(btn);
+          }
+
           d.appendChild(h);
 
           let p = document.createElement("div");
@@ -705,26 +747,6 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
           }
 
           d.appendChild(p);
-          if (b && typeof b === "object"){
-            let _t = b.text;
-            let _b = b.background || bg;
-            let _c = b.color || c;
-            let _br = b.borderRadius || "none";
-            let _s = b.boxShadow || "none";
-
-            let btn = document.createElement("button");
-            btn.classList.add("fsDialogBtn", "right-item");
-            btn.style = `background: ${_b}; color: ${_c}; borderRadius: ${_br}; boxShadow: ${_s};`;
-            btn.innerText = _t;
-            btn.addEventListener("click", () => {
-              _delete();
-              if(a && typeof a === "function"){
-                  a(p);
-              }
-            });
-
-            h.appendChild(btn);
-          }
           document.body.appendChild(d);
 
           function _delete(){
@@ -735,8 +757,10 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
         };
 
         self.removeFullScreenDialog = () => {
+            self.toggleNoScroll();
+
             let d = document.querySelector(".fullscreendialog");
-            self.removeOnBackKey(self.removeFullScreenDialog);
+            // self.removeOnBackKey(self.removeFullScreenDialog);
             
             if(d && SPprops.widgetCount.FSDialog > 0){
                 document.body.removeChild(d);
@@ -756,14 +780,8 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
             SPprops.blockGoingBackBy.ContextMenu++;
 
             self.preventBackKey();
-            self.onBackKey(self.removeContextMenu);
-
+            // self.onBackKey(self.removeContextMenu);
             self.toggleNoScroll();
-
-            let _coords = {x: 0, y: 0};
-            if(coords.x && coords.y){
-              _coords = {x: coords.x, y: coords.y};
-            }
 
             let scrimColor = "transparent";
             let color = "#000";
@@ -823,16 +841,32 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
             let height = parseInt(style.getPropertyValue("height"));
             let width = parseInt(style.getPropertyValue("width"));
 
-            if(_coords.x + width > window.innerWidth){
-              _coords.x -= width;
-            }
+            if(typeof coords === "undefined" || (typeof coords === "string" && coords === "center")){
+              menu.style.left = "50%";
+              menu.style.top = "50%";
+              menu.style.transform = "translate(-50%, -50%)";
 
-            if(_coords.y + height > window.innerHeight){
-              _coords.y -= height;
+              if(scrimColor === "transparent"){
+                scrimColor = false;
+              }
             }
+            else {
+              let _coords = {x: 0, y: 0};
+              if(typeof coords === "object" && coords.x && coords.y){
+                _coords = {x: coords.x, y: coords.y};
+              }
 
-            menu.style.left = _coords.x + "px";
-            menu.style.top = _coords.y + "px";
+              if(_coords.x + width > window.innerWidth){
+                _coords.x -= width;
+              }
+
+              if(_coords.y + height > window.innerHeight){
+                _coords.y -= height;
+              }
+
+              menu.style.left = _coords.x + "px";
+              menu.style.top = _coords.y + "px";
+            }
 
             self.createScrim(scrimColor);
             self.scrimAddListener("click", self.removeContextMenu);
@@ -851,7 +885,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
             self.scrimRemoveListener("click", self.removeContextMenu);
             self.scrimRemoveListener("contextmenu", preventDefault);
             self.removeScrim();
-            self.removeOnBackKey(self.removeContextMenu);
+            // self.removeOnBackKey(self.removeContextMenu);
             self.defaultBackKey();
 
             let m = document.querySelector(".sp-menu.menu");
@@ -932,28 +966,27 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
 
         // function to block back key event whenever necessary
         self.preventBackKey = () => {
-            SPprops.blockGoingBack = true;
             SPprops.blockCount++;
 
             if(SPprops.blockCount === 1){
-                history.pushState(null, null, location.href);
-                window.addEventListener("popstate", historyListener);
+                SPprops.blockGoingBack = true;
+                history.pushState(null, document.title, location.href);
+                window.addEventListener("popstate", historyListener, true);
             }
 
             return self;
         };
 
         self.defaultBackKey = () => {
-            SPprops.blockGoingBack = false;
             SPprops.blockCount--;
 
             if(SPprops.blockCount === 0){
-                window.removeEventListener("popstate", historyListener);
-                if(SPprops.historySteps === 0){
-                  history.go(-1);
-                }
-                else {
-                  history.go(0 - SPprops.historySteps);
+                SPprops.blockGoingBack = false;
+                window.removeEventListener("popstate", historyListener, true);
+                history.go(-1);
+
+                if(SPprops.historySteps > 0){
+                  // history.go(1 - SPprops.historySteps);
                   SPprops.historySteps = 0;
                 }
             }
@@ -961,23 +994,12 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
             return self;
         };
 
-        // Function to stop going back
-        function historyListener(){
-        	SPprops.historySteps++;
-        	history.go(1);
-        }
-
-        // Function to prevent default
-        function preventDefault(e){
-          e.preventDefault();
-        }
-
         self.onBackKey = listener => {
-            window.addEventListener("popstate", listener);
+          window.addEventListener("popstate", listener, true);
         };
 
         self.removeOnBackKey = listener => {
-            window.removeEventListener("popstate", listener);
+          window.removeEventListener("popstate", listener, true);
         };
 
         // event handlers
@@ -1066,6 +1088,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
         	let isPressed = false;
 
         	function handleStart(e){
+            e.preventDefault();
         		isPressed = true;
 
         		setTimeout(() => {
@@ -1677,8 +1700,8 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
       				let clsnames = cls.split(" ");
       				let count = 0;
       				
-      				clsnames.forEach(() => {
-      					if(r.classList.contains(clsnames[x])){ count++; }
+      				clsnames.forEach((x) => {
+      					if(r.classList.contains(x)){ count++; }
               });
       				
       				if (count === clsnames.length){ _count++; }
@@ -2017,11 +2040,9 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
             }
         };
 
-        self.vibrate = t => {
+        self.vibrate = (t = [200, 30, 200]) => {
             if (typeof window.navigator.vibrate === "function"){
-                let time = t || 200;
-                window.navigator.vibrate(time);
-
+                window.navigator.vibrate(t);
                 return self;
             }
             else {
@@ -2090,7 +2111,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
                   self.preventBackKey();
 
                   self.scrimAddListener("click", self.materialNav);
-                  self.onBackKey(self.materialNav);
+                  // self.onBackKey(self.materialNav);
 
                   SPprops.MaterialNav = true;
                 }
@@ -2101,7 +2122,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
                     SPprops.blockGoingBackBy.MaterialNav--;
 
                     self.scrimRemoveListener("click", self.materialNav);
-                    self.removeOnBackKey(self.materialNav);
+                    // self.removeOnBackKey(self.materialNav);
 
                     self.removeScrim();
                     self.defaultBackKey();
@@ -2681,7 +2702,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
           let _material_nav_opener_ = document.getElementsByClassName("material-nav_opener");
           
           Array.prototype.forEach.call(_material_nav_opener_, r => {
-              r.addEventListener("click", $().materialNav);
+              r.addEventListener("click", () => {$().materialNav();});
           });
       }
 
@@ -2714,13 +2735,23 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
           let shallOpenNav = false;
 
           $(".material-nav").swipe("any", r => {
-              document.querySelector(".sp-scrim").style.opacity = 1;
-
               if(Math.abs(r.x.traveled) > 50 && r.direction === "left" && r.time <= 1000){
-                $().materialNav();
+                mnav.style.left = "-290px";
+
+                SPprops.scrimCountBy.MaterialNav--;
+                SPprops.blockGoingBackBy.MaterialNav--;
+
+                $().scrimRemoveListener("click", $().materialNav);
+                // $().removeOnBackKey($().materialNav);
+
+                $().removeScrim();
+                $().defaultBackKey();
+
+                SPprops.MaterialNav = false;
               }
               else {
                 mnav.style.left = "0px";
+                document.querySelector(".sp-scrim").style.opacity = 1;
               }
           },{minLength: 1,
               withSwipe: r => {
@@ -2735,12 +2766,15 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
 
           $("html").swipe("right", r => {
               if(r.x.initial <= 20 && r.x.traveled >= 15 && shallOpenNav === true && parseInt($(mnav).left()) !== 0 && r.direction === "right"){
-                  mnav.style.left = 0;
+                  mnav.style.left = "0px";
+                  
                   SPprops.blockGoingBackBy.MaterialNav++;
                   $().preventBackKey();
-                  $().onBackKey($().materialNav);
-
-                  document.querySelector(".sp-scrim").style.opacity = 1;
+                  // $().onBackKey($().materialNav);
+                  
+                  if(SPprops.scrimCount === 1){
+                    document.querySelector(".sp-scrim").style.opacity = 1;
+                  }
               }
               else {
                   if(r.x.initial <= 20){
@@ -2753,15 +2787,20 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
               }
 
               shallOpenNav = false;
-          },{ minLength: 5,
+          },{ minLength: 1,
               onStart: r => {
                   if(r.x <= 20 && parseInt($(".material-nav").left()) === -290){
                       shallOpenNav = true;
 
                       SPprops.MaterialNav = true;
-                      $().createScrim();
                       SPprops.scrimCountBy.MaterialNav++;
+
+                      $().createScrim();
                       $().scrimAddListener("click", $().materialNav);
+                      
+                      if(SPprops.scrimCount === 1){
+                        document.querySelector(".sp-scrim").style.opacity = 0;
+                      }
                   }
               },
               withSwipe: r => {
@@ -2769,8 +2808,11 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
                   
                   if (r.x.initial <= 20 && t < 290 && shallOpenNav === true){
                       mnav.style.left = -290 + t +"px";
-                      let p = Math.floor(((Math.abs(t))/290) * 100) / 100;
-                      document.querySelector(".sp-scrim").style.opacity = p;
+
+                      if(SPprops.scrimCount === 1){
+                        let p = Math.floor(((Math.abs(t))/290) * 100) / 100;
+                        document.querySelector(".sp-scrim").style.opacity = p;
+                      }
                   }
               }
           });
@@ -2924,32 +2966,32 @@ function _sp_rippleIt(e){
     let color;
     let cColor = e.target.getAttribute("data-ripple");
     if (cColor){
-        if (cColor[0] !== "#"){
-            color = "#" + cColor;
-        }
-        else {
-            color = cColor;
-        }
+      if (cColor[0] !== "#"){
+        color = "#" + cColor;
+      }
+      else {
+        color = cColor;
+      }
     }
     else {
-        color = "rgba(255,255,255,0.9)";
+      color = "rgba(255,255,255,0.9)";
     }
 
     _sp_create_ripple(e, color);
 }
 
 function _sp_rippleIt_dark(e){
-    e = e || window.event;
-    _sp_create_ripple(e, "rgba(0, 0, 0, .5)");
+  e = e || window.event;
+  _sp_create_ripple(e, "rgba(0, 0, 0, .5)");
 }
 
 function _sp_rippleIt_auto(e){
-    e = e || window.event;
-    let style = window.getComputedStyle(e.target);
-    let bg = style.getPropertyValue("background-color");
-    let color = $().ld(bg, 90);
+  e = e || window.event;
+  let style = window.getComputedStyle(e.target);
+  let bg = style.getPropertyValue("background-color");
+  let color = $().ld(bg, 90);
 
-    _sp_create_ripple(e, color);
+  _sp_create_ripple(e, color);
 }
 
 function _sp_create_ripple(e, color){
@@ -3054,46 +3096,40 @@ window.addEventListener("scroll", () => {
 // function to control bottom sheet
 function __sp_bottomsheet(){
     let s = document.querySelector(".bottomsheet");
-    let h = parseInt($(".bottomsheet").height());
 
     $(".bottomsheet").swipe("any", r => {
         document.querySelector(".sp-scrim").style.opacity = 1;
 
         if(r.direction === "up"){
-            s.classList.add("extended");
-            h = parseInt($(".bottomsheet").height());
+          s.style.height = null;
+          s.classList.add("extended");
         }
         else if(r.direction === "down"){
-            let condition = Math.floor((r.y.traveled * 100)/window.innerHeight);
-            if((condition >= 10 && r.time <= 1000) || (condition >= 20 && r.time > 1000)){
-                document.querySelector(".sp-scrim").style.opacity = 1;
-                $().removeSheet();
-            }
-            else {
-                if(s.classList.contains("extended")){
-                    s.style.height = null;
-                }
-                else {
-                    s.style.height = null;
-                }
-            }
+          let condition = Math.floor((r.y.traveled * 100)/window.innerHeight);
+          
+          if((condition >= 10 && r.time <= 1000) || (condition >= 20 && r.time > 1000)){
+            $().removeSheet();
+          }
+          else if(s.classList.contains("extended")){
+            s.style.height = "calc(100% - 56px)";
+          }
         }
     }, {
         minLength: 15,
         withSwipe: r => {
-            let f = r.y.final;
-            let t = r.x.traveled;
-            let y = ( window.innerHeight - parseInt( $(".bottomsheet").getcss("bottom") ) ) + t;
+          let t = r.y.traveled * -1;
 
-            if (y <= window.innerHeight){
-                s.style.height = y + "px";
-                let p = Math.floor(((window.innerHeight - f)/window.innerHeight) * 100 ) / 100;
-                document.querySelector(".sp-scrim").style.opacity = p;
-            }
+          s.style.height = parseInt($(s).height()) + t + "px";
+          let p = Math.floor(((290 - Math.abs(t))/290) * 100) / 100;
+          document.querySelector(".sp-scrim").style.opacity = p;
         }
     });
 
     $("#bottomsheetClose").click($().removeSheet);
+    $("#bottomsheetBar").click(() => {
+      s.style.height = null;
+      s.classList.add("extended");
+    });
 }
 
 // Data Attribute Binding Functions
