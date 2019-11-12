@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dialog - SP.js example | DevSaurabh</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+	<link rel="stylesheet" type="text/css" href="../sp.css">
+</head>
+<body>
+	<div class="container">
+		<div class="page">
+			<div class="padding curved shadow1">
+				<h1>Dialog - SP.js example</h1>
+				<button class="ripple btn bg-steelblue shadow1 btn-dialog1">Create dialog 1</button>
+				<button class="ripple btn bg-purple shadow1 btn-dialog2">Create dialog 2</button>
+
+				<h2>Javascript code</h2>
+				<script src="https://gist.github.com/devmade/7e0529cd4be8438f2a9ae877d427475b.js"></script>
+			</div><br>
+			<div class="padding curved shadow1">
+				Source code to this is available at <br>
+				<a href="https://github.com/devmade/spjs/blob/master/examples/widget_dialog.html" target="_blank">https://github.com/devmade/spjs/blob/master/examples/widget_dialog.html</a><br>
+				Described in README here. <br>
+				<a href="https://github.com/devmade/spjs#6-createdialog-material-design-dialog" target="_blank">https://github.com/devmade/spjs#6-createdialog-material-design-dialog</a>
+			</div><br>
+		</div>
+	</div>
+<script type="text/javascript" src="../sp.js"></script>
+<script type="text/javascript">
+	$(".btn-dialog1").click(() => {
+		$().createDialog({
+			title: "Dialog box",
+			text: "This is a dialog. You can dismiss it by clicking on scrim."
+		});
+	});
+	
+	$(".btn-dialog2").click(() => {
+		$().createDialog({
+			title: "Dialog box",
+			text: "This is another dialog. You can only dismiss it by clicking either button or calling Javascript method.",
+			buttons: [
+				{
+					text: "Button",
+					action: ()=>{$().createToast("Button clicked");}
+				},
+				{
+					text: "cancel",
+					action: "cancel"
+				}
+			]
+		}, false);
+	});
+</script>
+</body>
+</html>

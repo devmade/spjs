@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Waiting - SP.js example | DevSaurabh</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+	<link rel="stylesheet" type="text/css" href="../sp.css">
+</head>
+<body>
+	<div class="container">
+		<div class="page">
+			<div class="padding curved shadow1">
+				<h1>Waiting - SP.js example</h1>
+				<button class="ripple btn bg-yellow shadow1 btn-waiting1">Create Waiting 1</button>
+				<button class="ripple btn bg-teal shadow1 btn-waiting2">Create Waiting 2</button>
+
+				<h2>Javascript code</h2>
+				<script src="https://gist.github.com/devmade/9e517a342dd272d90680d1b9e65f7afd.js"></script>
+			</div><br>
+			<div class="padding curved shadow1">
+				Source code to this is available at <br>
+				<a href="https://github.com/devmade/spjs/blob/master/examples/widget_waiting.html" target="_blank">https://github.com/devmade/spjs/blob/master/examples/widget_waiting.html</a><br>
+				Described in README here. <br>
+				<a href="https://github.com/devmade/spjs#5-createwaiting-material-design-loadingprogresswaiting-dialog" target="_blank">https://github.com/devmade/spjs#5-createwaiting-material-design-loadingprogresswaiting-dialog</a>
+			</div><br>
+		</div>
+	</div>
+<script type="text/javascript" src="../sp.js"></script>
+<script type="text/javascript">
+	$(".btn-waiting1").click(() => {
+		$().createWaiting({text: "It will close in 3 seconds", timeout: 3});
+	});
+
+	$(".btn-waiting2").click(() => {
+		$().createWaiting({text: "It won't close until called by Javacript $().removeWaiting()"});
+	});
+</script>
+</body>
+</html>

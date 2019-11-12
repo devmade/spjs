@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Context menu - SP.js example | DevSaurabh</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+	<link rel="stylesheet" type="text/css" href="../sp.css">
+</head>
+<body>
+	<div class="container">
+		<div class="page">
+			<div class="padding curved shadow1">
+				<h1>Context menu - SP.js example</h1>
+				<button class="ripple btn bg-danger darken3 shadow1 clickable btn-menu">Create Menu</button>
+				<button class="btn bg-white text-deeppurple shadow1 btn-rightclick">Right click</button>
+
+				<h2>Javascript code</h2>
+				<script src="https://gist.github.com/devmade/3aaaed05a426681e2c991e310e3a3cb4.js"></script>
+			</div><br>
+			<div class="padding curved shadow1">
+				Source code to this is available at <br>
+				<a href="https://github.com/devmade/spjs/blob/master/examples/widget_context_menu.html" target="_blank">https://github.com/devmade/spjs/blob/master/examples/widget_context_menu.html</a><br>
+				Described in README here. <br>
+				<a href="https://github.com/devmade/spjs#8-createcontextmenu-material-design-context-menu" target="_blank">https://github.com/devmade/spjs#8-createcontextmenu-material-design-context-menu</a>
+			</div><br>
+		</div>
+	</div>
+<script type="text/javascript" src="../sp.js"></script>
+<script type="text/javascript">
+	function evthndlr(e){
+		$().createContextMenu(e, [
+			{text: "Toast", action: () => {$().createToast("This is a toast");}},
+			{text: "Snackbar", action: () => {$().createSnackbar("This is a Snackbar");}},
+			"divider",
+			{text: "Disabled option", action: "Disabled"},
+			{text: "facebook.com", action: "https://facebook.com"}
+		]);
+	}
+	
+	$(".btn-menu").click(() => {
+		evthndlr("center");
+	});
+
+	$(".btn-rightclick").rightclick(evthndlr);
+</script>
+</body>
+</html>

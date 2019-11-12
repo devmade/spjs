@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Fullscreen dialog - SP.js example | DevSaurabh</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+	<link rel="stylesheet" type="text/css" href="../sp.css">
+</head>
+<body>
+	<div class="container">
+		<div class="page">
+			<div class="padding curved shadow1">
+				<h1>Fullscreen dialog - SP.js example</h1>
+				<button class="ripple btn bg-skyblue shadow1 btn-fsdialog">Create Full screen dialog</button>
+
+				<h2>Javascript code</h2>
+				<script src="https://gist.github.com/devmade/686935c6c2a358ea86ede9a5579f703c.js"></script>
+			</div><br>
+			<div class="padding curved shadow1">
+				Source code to this is available at <br>
+				<a href="https://github.com/devmade/spjs/blob/master/examples/widget_fs_dialog.html" target="_blank">https://github.com/devmade/spjs/blob/master/examples/widget_fs_dialog.html</a><br>
+				Described in README here. <br>
+				<a href="https://github.com/devmade/spjs#7-createfullscreendialog-material-design-full-screen-dialog" target="_blank">https://github.com/devmade/spjs#7-createfullscreendialog-material-design-full-screen-dialog</a>
+			</div><br>
+		</div>
+	</div>
+<script type="text/javascript" src="../sp.js"></script>
+<script type="text/javascript">
+	$(".btn-fsdialog").click(() => {
+		$().createFullScreenDialog({
+			title: "Custom title",
+			background: $().colors.material.red[100],
+			color: $().colors.material.red[900],
+			button: {background: "black", color: "white"},
+			action: (data) => {
+				$().createSnackbar("Action button clicked.");
+				console.log(data);
+			},
+			content: `<div class="padding curved shadow2 margin bg-green lighten4">
+						<h1>Heading 1</h1><h2>Heading 2</h2>
+					</div>`
+		});
+	});
+</script>
+</body>
+</html>

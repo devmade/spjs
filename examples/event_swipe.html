@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Swipe events - SP.js example | DevSaurabh</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+	<link rel="stylesheet" type="text/css" href="../sp.css">
+</head>
+<body class="unselectable">
+	<div class="container">
+		<div class="page">
+			<div class="padding curved shadow1">
+				<h1>Swipe events - SP.js example</h1>
+				<table class="material-table">
+					<tr>
+						<th>Event name</th>
+						<th>X</th>
+						<th>Y</th>
+						<th>Others</th>
+					</tr>
+					<tr>
+						<td>onStart</td>
+						<td id="s-x"></td>
+						<td id="s-y"></td>
+						<td id="s-o"></td>
+					</tr>
+					<tr>
+						<td>whileSwipe</td>
+						<td id="w-x"></td>
+						<td id="w-y"></td>
+						<td id="w-o"></td>
+					</tr>
+					<tr>
+						<td>onEnd</td>
+						<td id="e-x"></td>
+						<td id="e-y"></td>
+						<td id="e-o"></td>
+					</tr>
+				</table>
+
+				<h2>Javascript code</h2>
+				<script src="https://gist.github.com/devmade/9646644d851c1b30cb1ad60f66ad5b7d.js"></script>
+			</div><br>
+			<div class="padding curved shadow1">
+				Source code to this is available at <br>
+				<a href="https://github.com/devmade/spjs/blob/master/examples/event_swipe.html" target="_blank">https://github.com/devmade/spjs/blob/master/examples/event_swipe.html</a><br>
+				Described in README here. <br>
+				<a href="https://github.com/devmade/spjs#swipe-event-handler" target="_blank">https://github.com/devmade/spjs#swipe-event-handler</a>
+			</div><br>
+		</div>
+	</div>
+<script type="text/javascript" src="../sp.js"></script>
+<script type="text/javascript">
+	$("body").swipe("any", endHandler, {
+		minLength: 1, onStart: startHandler, withSwipe: withHandler
+	});
+
+	function startHandler(data){
+		$("#s-x").html(`
+			<span class="bg-red">${data.x}</span>
+		`);
+		$("#s-y").html(`
+			<span class="bg-red">${data.y}</span>
+		`);
+		$("#s-o").html(`
+			<span class="bg-red">${data.time}</span>
+		`);
+	}
+
+	function withHandler(data){
+		$("#w-x").html(`
+			<span class="bg-red">Initial : ${data.x.initial}</span>
+			<span class="bg-green">Final : ${data.x.final}</span>
+			<span class="bg-blue">Traveled : ${data.x.traveled}</span>
+		`);
+		$("#w-y").html(`
+			<span class="bg-red">Initial : ${data.y.initial}</span>
+			<span class="bg-green">Final : ${data.y.final}</span>
+			<span class="bg-blue">Traveled : ${data.y.traveled}</span>
+		`);
+		$("#w-o").html(`
+			<span class="bg-red">Angle : ${data.angle}</span>
+			<span class="bg-green">direction : ${data.direction}</span>
+			<span class="bg-blue">Time : ${data.time}</span>
+		`);
+	}
+
+	function endHandler(data){
+		$("#e-x").html(`
+			<span class="bg-red">Initial : ${data.x.initial}</span>
+			<span class="bg-green">Final : ${data.x.final}</span>
+			<span class="bg-blue">Traveled : ${data.x.traveled}</span>
+		`);
+		$("#e-y").html(`
+			<span class="bg-red">Initial : ${data.y.initial}</span>
+			<span class="bg-green">Final : ${data.y.final}</span>
+			<span class="bg-blue">Traveled : ${data.y.traveled}</span>
+		`);
+		$("#e-o").html(`
+			<span class="bg-red">Angle : ${data.angle}</span>
+			<span class="bg-green">direction : ${data.direction}</span>
+			<span class="bg-blue">Time : ${data.time}</span>
+		`);
+	}
+</script>
+</body>
+</html>
