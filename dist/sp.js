@@ -2734,97 +2734,7 @@ const SP_DATA_LD = ["lighten1","lighten2","lighten3","lighten4","darken1","darke
       }
     });
 
-    window.addEventListener("load", () => {
-      // Material Nav Bind Swipe Events
-      let mnav = document.querySelector(".material-nav");
-
-      if (mnav){
-          let shallOpenNav = false;
-
-          $(".material-nav").swipe("any", r => {
-              if(Math.abs(r.x.traveled) > 50 && r.direction === "left" && r.time <= 1000){
-                mnav.style.left = "-290px";
-
-                SPprops.scrimCountBy.MaterialNav--;
-                SPprops.blockGoingBackBy.MaterialNav--;
-
-                $().scrimRemoveListener("click", $().materialNav);
-                // $().removeOnBackKey($().materialNav);
-
-                $().removeScrim();
-                $().defaultBackKey();
-
-                SPprops.MaterialNav = false;
-              }
-              else {
-                mnav.style.left = "0px";
-                document.querySelector(".sp-scrim").style.opacity = 1;
-              }
-          },{minLength: 1,
-              withSwipe: r => {
-                let t = r.x.traveled;
-
-                mnav.style.left = parseInt($(mnav).left()) +  t + "px";
-
-                let p = Math.floor(((290 - Math.abs(t))/290) * 100) / 100;
-                document.querySelector(".sp-scrim").style.opacity = p;
-              }
-          });
-
-          $("html").swipe("right", r => {
-              if(r.x.initial <= 20 && r.x.traveled >= 15 && shallOpenNav === true && parseInt($(mnav).left()) !== 0 && r.direction === "right"){
-                  mnav.style.left = "0px";
-                  
-                  SPprops.blockGoingBackBy.MaterialNav++;
-                  $().preventBackKey();
-                  // $().onBackKey($().materialNav);
-                  
-                  if(SPprops.scrimCount === 1){
-                    document.querySelector(".sp-scrim").style.opacity = 1;
-                  }
-              }
-              else {
-                  if(r.x.initial <= 20){
-                    mnav.style.left = "-290px";
-
-                    $().scrimRemoveListener("click", $().materialNav);
-                    $().removeScrim();
-                    SPprops.scrimCountBy.MaterialNav--;
-                  }
-              }
-
-              shallOpenNav = false;
-          },{ minLength: 1,
-              onStart: r => {
-                  if(r.x <= 20 && parseInt($(".material-nav").left()) === -290){
-                      shallOpenNav = true;
-
-                      SPprops.MaterialNav = true;
-                      SPprops.scrimCountBy.MaterialNav++;
-
-                      $().createScrim();
-                      $().scrimAddListener("click", $().materialNav);
-                      
-                      if(SPprops.scrimCount === 1){
-                        document.querySelector(".sp-scrim").style.opacity = 0;
-                      }
-                  }
-              },
-              withSwipe: r => {
-                  let t = r.x.traveled;
-                  
-                  if (r.x.initial <= 20 && t < 290 && shallOpenNav === true){
-                      mnav.style.left = -290 + t +"px";
-
-                      if(SPprops.scrimCount === 1){
-                        let p = Math.floor(((Math.abs(t))/290) * 100) / 100;
-                        document.querySelector(".sp-scrim").style.opacity = p;
-                      }
-                  }
-              }
-          });
-      }
-    });
+    window.addEventListener("load", _sp_init_mnav);
 }));
 // end of sp declaration
 // beginning of initiation function
@@ -2957,6 +2867,98 @@ function _sp_init(){
     });
 }
 //end of init function
+
+function _sp_init_mnav(){
+  // Material Nav Bind Swipe Events
+  let mnav = document.querySelector(".material-nav");
+
+  if (mnav){
+    let shallOpenNav = false;
+
+    $(".material-nav").swipe("any", r => {
+        if(Math.abs(r.x.traveled) > 50 && r.direction === "left" && r.time <= 1000){
+          mnav.style.left = "-290px";
+
+          SPprops.scrimCountBy.MaterialNav--;
+          SPprops.blockGoingBackBy.MaterialNav--;
+
+          $().scrimRemoveListener("click", $().materialNav);
+          // $().removeOnBackKey($().materialNav);
+
+          $().removeScrim();
+          $().defaultBackKey();
+
+          SPprops.MaterialNav = false;
+        }
+        else {
+          mnav.style.left = "0px";
+          document.querySelector(".sp-scrim").style.opacity = 1;
+        }
+    },{minLength: 1,
+        withSwipe: r => {
+          let t = r.x.traveled;
+
+          mnav.style.left = parseInt($(mnav).left()) +  t + "px";
+
+          let p = Math.floor(((290 - Math.abs(t))/290) * 100) / 100;
+          document.querySelector(".sp-scrim").style.opacity = p;
+        }
+    });
+
+    $("html").swipe("right", r => {
+        if(r.x.initial <= 20 && r.x.traveled >= 15 && shallOpenNav === true && parseInt($(mnav).left()) !== 0 && r.direction === "right"){
+            mnav.style.left = "0px";
+            
+            SPprops.blockGoingBackBy.MaterialNav++;
+            $().preventBackKey();
+            // $().onBackKey($().materialNav);
+            
+            if(SPprops.scrimCount === 1){
+              document.querySelector(".sp-scrim").style.opacity = 1;
+            }
+        }
+        else {
+            if(r.x.initial <= 20){
+              mnav.style.left = "-290px";
+
+              $().scrimRemoveListener("click", $().materialNav);
+              $().removeScrim();
+              SPprops.scrimCountBy.MaterialNav--;
+            }
+        }
+
+        shallOpenNav = false;
+    },{ minLength: 1,
+        onStart: r => {
+            if(r.x <= 20 && parseInt($(".material-nav").left()) === -290){
+                shallOpenNav = true;
+
+                SPprops.MaterialNav = true;
+                SPprops.scrimCountBy.MaterialNav++;
+
+                $().createScrim();
+                $().scrimAddListener("click", $().materialNav);
+                
+                if(SPprops.scrimCount === 1){
+                  document.querySelector(".sp-scrim").style.opacity = 0;
+                }
+            }
+        },
+        withSwipe: r => {
+            let t = r.x.traveled;
+            
+            if (r.x.initial <= 20 && t < 290 && shallOpenNav === true){
+                mnav.style.left = -290 + t +"px";
+
+                if(SPprops.scrimCount === 1){
+                  let p = Math.floor(((Math.abs(t))/290) * 100) / 100;
+                  document.querySelector(".sp-scrim").style.opacity = p;
+                }
+            }
+        }
+    });
+  }
+}
 
 /*sp ripple function*/
 function _sp_rippleIt(e){
